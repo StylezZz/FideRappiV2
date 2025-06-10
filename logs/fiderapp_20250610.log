@@ -49,3 +49,7 @@
 2025-06-10 10:45:01 - FideRAPPI.FideRappiApp - INFO - Contexto configurado para: CCE
 2025-06-10 10:45:02 - FideRAPPI.ConfigWindow - INFO - Ventana de configuración abierta para CCE
 2025-06-10 10:45:09 - FideRAPPI.ConfigWindow - INFO - Ventana de configuración cerrada
+2025-06-10 11:25:57 - FideRAPPI - INFO - Iniciando FideRAPPI...
+2025-06-10 11:25:58 - FideRAPPI.FideRappiApp - WARNING - No se pudo cargar el icono de la aplicación
+2025-06-10 11:25:58 - FideRAPPI.FideRappiApp - INFO - Contexto configurado para: CCE
+2025-06-10 11:25:58 - FideRAPPI.FideRappiApp - INFO - Ventana principal inicializada correctamente
