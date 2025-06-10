@@ -1,0 +1,51 @@
+2025-06-10 10:26:43 - FideRAPPI - INFO - Iniciando FideRAPPI...
+2025-06-10 10:26:43 - FideRAPPI.FideRappiApp - WARNING - No se pudo cargar el icono de la aplicación
+2025-06-10 10:29:27 - FideRAPPI - INFO - Iniciando FideRAPPI...
+2025-06-10 10:29:27 - FideRAPPI.FideRappiApp - WARNING - No se pudo cargar el icono de la aplicación
+2025-06-10 10:30:58 - FideRAPPI - INFO - Iniciando FideRAPPI...
+2025-06-10 10:30:58 - FideRAPPI.FideRappiApp - WARNING - No se pudo cargar el icono de la aplicación
+2025-06-10 10:30:58 - FideRAPPI.ExcelProcessor - INFO - Procesador de Excel abierto para CCE
+2025-06-10 10:32:43 - FideRAPPI - INFO - Iniciando FideRAPPI...
+2025-06-10 10:32:43 - FideRAPPI.FideRappiApp - WARNING - No se pudo cargar el icono de la aplicación
+2025-06-10 10:32:43 - FideRAPPI.ExcelProcessor - INFO - Procesador de Excel abierto para CCE
+2025-06-10 10:32:43 - FideRAPPI.FideRappiApp - WARNING - Imagen no encontrada: D:\fiderappi_v2\assets/img\configuraciones.png
+2025-06-10 10:32:43 - FideRAPPI.FideRappiApp - WARNING - Imagen no encontrada: D:\fiderappi_v2\assets/img\banco.png
+2025-06-10 10:32:43 - FideRAPPI.FideRappiApp - WARNING - Imagen no encontrada: D:\fiderappi_v2\assets/img\salvar.png
+2025-06-10 10:32:43 - FideRAPPI.FideRappiApp - WARNING - Imagen no encontrada: D:\fiderappi_v2\assets/img\cerrar-sesion.png
+2025-06-10 10:32:43 - FideRAPPI.FideRappiApp - WARNING - Imagen no encontrada: D:\fiderappi_v2\assets/img\play.png
+2025-06-10 10:32:43 - FideRAPPI.FideRappiApp - WARNING - Imagen no encontrada: D:\fiderappi_v2\assets/img\depositar.png
+2025-06-10 10:32:43 - FideRAPPI.FideRappiApp - WARNING - Imagen no encontrada: D:\fiderappi_v2\assets/img\retirar.png
+2025-06-10 10:32:43 - FideRAPPI.FideRappiApp - WARNING - Imagen no encontrada: D:\fiderappi_v2\assets/img\historial-de-transacciones.png
+2025-06-10 10:32:43 - FideRAPPI.FideRappiApp - WARNING - Imagen no encontrada: D:\fiderappi_v2\assets/img\lbtr_abonos.png
+2025-06-10 10:32:43 - FideRAPPI.FideRappiApp - WARNING - Imagen no encontrada: D:\fiderappi_v2\assets/img\enlace-web.png
+2025-06-10 10:32:43 - FideRAPPI.FideRappiApp - WARNING - Imagen no encontrada: D:\fiderappi_v2\assets/img\trabajo-en-progreso.png
+2025-06-10 10:32:43 - FideRAPPI.FideRappiApp - INFO - Contexto configurado para: CCE
+2025-06-10 10:32:43 - FideRAPPI.FideRappiApp - INFO - Ventana principal inicializada correctamente
+2025-06-10 10:32:48 - FideRAPPI.ExcelProcessor - INFO - Procesador de Excel cerrado
+2025-06-10 10:32:51 - FideRAPPI.FideRappiApp - INFO - Contexto configurado para: AHORROS
+2025-06-10 10:32:51 - FideRAPPI.FideRappiApp - INFO - Contexto configurado para: CTA_CTES
+2025-06-10 10:32:52 - FideRAPPI.FideRappiApp - INFO - Contexto configurado para: LBTR
+2025-06-10 10:32:52 - FideRAPPI.FideRappiApp - INFO - Contexto configurado para: Cargo
+2025-06-10 10:32:56 - FideRAPPI.FideRappiApp - INFO - Contexto configurado para: LBTR
+2025-06-10 10:32:57 - FideRAPPI.FideRappiApp - INFO - Contexto configurado para: CCE
+2025-06-10 10:37:43 - FideRAPPI - INFO - Iniciando FideRAPPI...
+2025-06-10 10:37:44 - FideRAPPI.FideRappiApp - WARNING - No se pudo cargar el icono de la aplicación
+2025-06-10 10:37:44 - FideRAPPI.ExcelProcessor - INFO - Procesador de Excel abierto para CCE
+2025-06-10 10:37:44 - FideRAPPI.FideRappiApp - INFO - Contexto configurado para: CCE
+2025-06-10 10:37:44 - FideRAPPI.FideRappiApp - INFO - Ventana principal inicializada correctamente
+2025-06-10 10:37:52 - FideRAPPI.ExcelProcessor - INFO - Procesador de Excel cerrado
+2025-06-10 10:44:49 - FideRAPPI - INFO - Iniciando FideRAPPI...
+2025-06-10 10:44:49 - FideRAPPI.FideRappiApp - WARNING - No se pudo cargar el icono de la aplicación
+2025-06-10 10:44:50 - FideRAPPI.FideRappiApp - INFO - Contexto configurado para: CCE
+2025-06-10 10:44:50 - FideRAPPI.FideRappiApp - INFO - Ventana principal inicializada correctamente
+2025-06-10 10:44:55 - FideRAPPI.FideRappiApp - INFO - Contexto configurado para: AHORROS
+2025-06-10 10:44:56 - FideRAPPI.FideRappiApp - INFO - Contexto configurado para: CTA_CTES
+2025-06-10 10:44:56 - FideRAPPI.FideRappiApp - INFO - Contexto configurado para: CTA_CTES
+2025-06-10 10:44:57 - FideRAPPI.FideRappiApp - INFO - Contexto configurado para: LBTR
+2025-06-10 10:44:57 - FideRAPPI.FideRappiApp - INFO - Contexto configurado para: Cargo
+2025-06-10 10:44:57 - FideRAPPI.FideRappiApp - INFO - Contexto configurado para: Cargo
+2025-06-10 10:44:59 - FideRAPPI.FideRappiApp - INFO - Contexto configurado para: Cargo
+2025-06-10 10:45:00 - FideRAPPI.FideRappiApp - INFO - Contexto configurado para: Cargo
+2025-06-10 10:45:01 - FideRAPPI.FideRappiApp - INFO - Contexto configurado para: CCE
+2025-06-10 10:45:02 - FideRAPPI.ConfigWindow - INFO - Ventana de configuración abierta para CCE
+2025-06-10 10:45:09 - FideRAPPI.ConfigWindow - INFO - Ventana de configuración cerrada

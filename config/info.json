@@ -1,0 +1,80 @@
+{
+    "version": "2.0.0",
+    "app_name": "FideRAPPI",
+    "description": "Sistema de Carga de Datos Bancarios",
+    "files": {
+        "CCE": {
+            "ruta_origen": "templates/CCE-Formato.xlsm",
+            "ruta_destino": "output",
+            "description": "Cámara de Compensación Electrónica",
+            "sheet_name": "CCE",
+            "max_amount": 9999.99,
+            "cci_length": 20
+        },
+        "CTA_CTES": {
+            "ruta_origen": "templates/Corriente-Formato.xlsm", 
+            "ruta_destino": "output",
+            "description": "Cuentas Corrientes",
+            "sheet_name": "Corriente",
+            "account_length": 11
+        },
+        "AHORROS": {
+            "ruta_origen": "templates/Ahorros-Formato.xlsm",
+            "ruta_destino": "output",
+            "description": "Cuentas de Ahorros",
+            "sheet_name": "Ahorros",
+            "account_length": 11
+        },
+        "Cargo": {
+            "ruta_origen": "templates/Cargo-Formato.xlsx",
+            "ruta_destino": "output",
+            "description": "Operaciones de Cargo",
+            "sheet_name": "Cargo"
+        },
+        "LBTR": {
+            "ruta_origen": "templates/LBTR-Formato.xlsm",
+            "ruta_destino": "output",
+            "description": "Sistema de Liquidación Bruta en Tiempo Real",
+            "sheet_name": "LBTR",
+            "min_amount": 10000.00,
+            "commission": 14.00
+        }
+    },
+    "lbtr_details": {
+        "link": "http://10.7.25.159:9080/LBTR-web/#/login",
+        "description": "URL del sistema LBTR",
+        "driver_name": "msedgedriver.exe",
+        "timeout": 30
+    },
+    "ui_settings": {
+        "theme": "blue",
+        "appearance_mode": "dark",
+        "window_size": "390x410",
+        "window_position": "+720+120"
+    },
+    "automation_settings": {
+        "interval": 0.8,
+        "screenshot_on_error": true,
+        "auto_backup": true,
+        "max_retry_attempts": 3
+    },
+    "logging": {
+        "level": "INFO",
+        "max_file_size": "10MB",
+        "backup_count": 5,
+        "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    },
+    "paths": {
+        "templates": "templates",
+        "output": "output", 
+        "logs": "logs",
+        "processed": "Procesados",
+        "screenshots": "Alerta"
+    },
+    "validation": {
+        "max_memo_digits": 4,
+        "max_account_digits": 11,
+        "required_extensions": [".xlsx", ".xlsm"],
+        "max_file_size_mb": 50
+    }
+}
