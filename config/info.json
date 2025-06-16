@@ -12,7 +12,7 @@
             "cci_length": 20
         },
         "CTA_CTES": {
-            "ruta_origen": "templates/Corriente-Formato.xlsm", 
+            "ruta_origen": "templates/Corriente-Formato.xlsm",
             "ruta_destino": "output",
             "description": "Cuentas Corrientes",
             "sheet_name": "Corriente",
@@ -32,12 +32,12 @@
             "sheet_name": "Cargo"
         },
         "LBTR": {
-            "ruta_origen": "templates/LBTR-Formato.xlsm",
-            "ruta_destino": "output",
+            "ruta_origen": "C:/Users/pra_ccarrillo/Desktop/LBTR-Formato.xlsm",
+            "ruta_destino": "C:/Users/pra_ccarrillo/Desktop",
             "description": "Sistema de Liquidación Bruta en Tiempo Real",
             "sheet_name": "LBTR",
-            "min_amount": 10000.00,
-            "commission": 14.00
+            "min_amount": 10000.0,
+            "commission": 14.0
         }
     },
     "lbtr_details": {
@@ -66,7 +66,7 @@
     },
     "paths": {
         "templates": "templates",
-        "output": "output", 
+        "output": "output",
         "logs": "logs",
         "processed": "Procesados",
         "screenshots": "Alerta"
@@ -74,7 +74,10 @@
     "validation": {
         "max_memo_digits": 4,
         "max_account_digits": 11,
-        "required_extensions": [".xlsx", ".xlsm"],
+        "required_extensions": [
+            ".xlsx",
+            ".xlsm"
+        ],
         "max_file_size_mb": 50
     }
 }
