@@ -152,8 +152,7 @@ class LBTROperations(BaseLogic):
         Args:
             usuario: Usuario para login
             clave: Contraseña para login
-        
-        Returns:
+          Returns:
             True si se completó correctamente
         """
         if not SELENIUM_AVAILABLE:
@@ -267,8 +266,7 @@ class LBTROperations(BaseLogic):
                     "Proceso no iniciado",
                     "No se ha realizado ningún abono, el excel ya está procesado o está vacío."
                 )
-            else:
-                # Guardar archivo procesado
+            else:                # Guardar archivo procesado
                 ruta_procesado = self._guardar_archivo_procesado_lbtr(
                     wb_lbtr, lista_memo_lbtr, directorio, fecha_actual
                 )
@@ -296,6 +294,8 @@ class LBTROperations(BaseLogic):
             if driver:
                 try:
                     driver.quit()
+                    # Limpiar directorio temporal de browser
+                    self._cleanup_temp_browser_data()
                 except:
                     pass
             
@@ -313,7 +313,17 @@ class LBTROperations(BaseLogic):
                     os.startfile(ruta_procesado)
                 except:
                     pass
-    
+
+    def _cleanup_temp_browser_data(self):
+        """Limpia los directorios temporales del navegador"""
+        try:
+            import shutil
+            temp_browser_dir = os.path.join(os.getcwd(), "temp_browser_data")
+            if os.path.exists(temp_browser_dir):
+                shutil.rmtree(temp_browser_dir, ignore_errors=True)
+        except Exception as e:
+            self.logger.warning(f"No se pudo limpiar directorio temporal: {e}")
+      
     def _init_selenium_driver(self, enlace: str):
         """Inicializa el driver de Selenium"""
         try:
@@ -327,21 +337,29 @@ class LBTROperations(BaseLogic):
                 )
                 return None
             
-            # Configurar opciones
+            # Configurar el servicio de Edge
+            servicio = webdriver.EdgeService(executable_path=driver_path)
             edge_options = Options()
             edge_options.add_argument('--ignore-certificate-errors')
             edge_options.add_argument("--inprivate")
-            
-            # Configurar servicio
-            service = webdriver.EdgeService(executable_path=driver_path)
+            # Agregar directorio único de datos de usuario para evitar conflictos
+            user_data_dir = os.path.join(os.getcwd(), "temp_browser_data", str(int(time.time())))
+            edge_options.add_argument(f"--user-data-dir={user_data_dir}")
+            # Deshabilitar extensiones y otras características que pueden causar problemas
+            edge_options.add_argument("--disable-extensions")
+            edge_options.add_argument("--disable-plugins")
+            edge_options.add_argument("--no-sandbox")
+            edge_options.add_argument("--disable-dev-shm-usage")
             
             # Crear driver
-            driver = webdriver.Edge(service=service, options=edge_options)
+            driver = webdriver.Edge(service=servicio, options=edge_options)
             driver.maximize_window()
-            driver.implicitly_wait(5)
             
             # Navegar a la página
             driver.get(enlace)
+            
+            # Configurar un tiempo de espera implícito
+            driver.implicitly_wait(5)  # Espera hasta 5 segundos para encontrar elementos
             
             return driver
             
@@ -944,3 +962,13 @@ class LBTROperations(BaseLogic):
                     os.startfile(ruta_origen)
                 except:
                     pass
+    
+    def _cleanup_temp_browser_data(self):
+        """Limpia los directorios temporales del navegador"""
+        try:
+            import shutil
+            temp_browser_dir = os.path.join(os.getcwd(), "temp_browser_data")
+            if os.path.exists(temp_browser_dir):
+                shutil.rmtree(temp_browser_dir, ignore_errors=True)
+        except Exception as e:
+            self.logger.warning(f"No se pudo limpiar directorio temporal: {e}")

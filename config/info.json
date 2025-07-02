@@ -26,8 +26,8 @@
             "account_length": 11
         },
         "Cargo": {
-            "ruta_origen": "templates/Cargo-Formato.xlsx",
-            "ruta_destino": "output",
+            "ruta_origen": "C:/Users/pra_ccarrillo/Desktop/Cargo-Formato.xlsx",
+            "ruta_destino": "C:/Users/pra_ccarrillo/Desktop/Procesados",
             "description": "Operaciones de Cargo",
             "sheet_name": "Cargo"
         },
