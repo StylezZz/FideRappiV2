@@ -29,3 +29,5 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+temp_browser_data/

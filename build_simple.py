@@ -11,7 +11,7 @@ import subprocess
 from pathlib import Path
 
 # Ruta específica para tu instalación de PyInstaller
-PYINSTALLER_PATH = r"C:\Users\pra_ccarrillo\AppData\Roaming\Python\Python313\Scripts\pyinstaller.exe"
+PYINSTALLER_PATH = r"C:\Users\jsantillana\AppData\Local\Programs\Python\Python312\Scripts\pyinstaller.exe"
 
 def check_pyinstaller():
     """Verifica que PyInstaller esté disponible"""

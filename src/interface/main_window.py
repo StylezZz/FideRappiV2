@@ -228,7 +228,8 @@ class FideRappiApp(customtkinter.CTk, LoggerMixin):
             },
             'Extras': {
                 'buttons': [
-                    ('UNIR PDF\'s', None, self.exec_union)
+                   ('UNIR PDF\'s', None, self.exec_union)
+
                 ]
             }
         }
@@ -265,7 +266,7 @@ class FideRappiApp(customtkinter.CTk, LoggerMixin):
             
             # Configurar grid según el tipo de operación
             if operation_name == "Extras":
-                btn.grid(row=i-1, column=0, columnspan=2, padx=20, pady=20, sticky="nwse")
+                btn.grid(row=i-1, column=0, columnspan=2, padx=15, pady=10, sticky="we")
             elif operation_name == "Cargo" and i == len(buttons_config):
                 # Botón de configuración para cargo
                 btn.grid(row=i, column=0, columnspan=2, padx=20, pady=20, sticky="we")
@@ -410,17 +411,199 @@ class FideRappiApp(customtkinter.CTk, LoggerMixin):
         except Exception as e:
             self.logger.error(f"Error iniciando sesión LBTR: {e}")
             messagebox.showerror("Error", f"Error iniciando LBTR: {e}")
-    
+        
     def exec_union(self):
-        """Ejecuta la unión de PDFs"""
+        """Ventana para seleccionar o arrastrar múltiples archivos PDF, verlos, eliminarlos y combinarlos"""
         try:
-            carpeta = filedialog.askdirectory(title="Escoja la carpeta con PDFs")
-            if carpeta:
-                extra_operations.ExtraOperations.combinar_pdfs(carpeta)
+            import tkinter as tk
+            from tkinter import filedialog, messagebox, Toplevel
+            from src.operations import extra_operations
+            import os
+            
+            try:
+                from tkinterdnd2 import DND_FILES, TkinterDnD
+                DRAG_DROP_AVAILABLE = True
+            
+            except ImportError:
+                DRAG_DROP_AVAILABLE = False
+            
+            if DRAG_DROP_AVAILABLE:
+                class DragDropToplevel(Toplevel, TkinterDnD.DnDWrapper):
+                    def __init__(self, *args, **kwargs):
+                        Toplevel.__init__(self, *args, **kwargs)
+                        self._load_tkdnd()
+                    
+                    def _load_tkdnd(self):
+                        self.tk.call('package', 'require', 'tkdnd')
+                        self.dnd = TkinterDnD.DnD(self)
+            else:
+                DragDropToplevel = Toplevel
+            
+            class DragDropPDFWindow(Toplevel):
+                def __init__(self, master=None):
+                    super().__init__(master)
+                    self.title("Unir PDF's")
+                    self.geometry("520x360")
+                    self.configure(bg="#2a2a2a")
+                    self.archivos_pdf = []
+                    self.drag_drop_enabled = False
+                    
+                    if DRAG_DROP_AVAILABLE:
+                        try:
+                            self.tk.call('package', 'require', 'tkdnd')
+                            self.dnd = TkinterDnD.DnD(self)
+                            self.drag_drop_enabled = True
+                        except Exception as e:
+                            print(f"Error inicializando drag&drop: {e}")
+                    self._create_interface()
+                
+                def _create_interface(self):
+                    texto_info = ("Haz clic o arrastra aquí tus archivos PDF" if self.drag_drop_enabled
+                                  else "Haz clic para seleccionar archivos PDF")
+                    
+                    self.label_info = tk.Label(
+                        self,
+                        text=texto_info,
+                        bg="#3a3a3a",
+                        fg="white",
+                        font=("Arial", 13),
+                        relief="groove",
+                        padx=10,
+                        pady=20
+                    )
+                    self.label_info.pack(fill="x", padx=20, pady=(20, 10))
+                    self.label_info.bind("<Button-1>", self.seleccionar_archivos)
+                    
+                    if self.drag_drop_enabled:
+                        try:
+                            self.label_info.drop_target_register(DND_FILES)
+                            self.label_info.dnd_bind('<<Drop>>', self.on_drop)
+                        
+                        except Exception as e:
+                            print(f"Error configurando drag&drop en label: {e}")
+                            self.drag_drop_enabled = False
+                            self.label_info.configure(text="Haz clic para seleccionar archivos PDF")
+                    
+                    self.frame_lista = tk.Frame(self, bg="#2a2a2a")
+                    self.frame_lista.pack(expand=True, fill="both", padx=20, pady=5)
+                    
+                    self.btn_unir = tk.Button(
+                        self,
+                        text="Unir PDF's",
+                        command=self.combinar_archivos,
+                        bg="#1F6AA5",
+                        fg="white",
+                        disabledforeground="white",
+                        font=("Arial", 12, "bold"),
+                        relief="flat",
+                        padx=10,
+                        pady=5,
+                        state="disabled"
+                    )
+                    self.btn_unir.pack(pady=(5, 20))
+                    
+                    self.actualizar_lista()
+                
+                def seleccionar_archivos(self, event=None):
+                    try:
+                        seleccionados = filedialog.askopenfilenames(
+                            title="Selecciona los archivos PDF que deseas unir",
+                            filetypes=[("Archivos PDF", "*.pdf")],
+                            multiple=True
+                        )
+                        if seleccionados:
+                            for archivo in seleccionados:
+                                if archivo not in self.archivos_pdf and archivo.lower().endswith(".pdf"):
+                                    self.archivos_pdf.append(archivo)
+                            self.actualizar_lista()
+                    except Exception as e:
+                        messagebox.showerror("Error", f"Error seleccionando archivos: {e}")
+                        
+                def on_drop(self, event):
+                    try:
+                        paths = self.tk.splitlist(event.data)
+                        for path in paths:
+                            path = path.strip().strip('{}')
+                            if path.lower().endswith(".pdf") and path not in self.archivos_pdf:
+                                self.archivos_pdf.append(path)
+                        self.actualizar_lista()
+                    
+                    except Exception as e:
+                        messagebox.showerror("Error", f"Error procesando archivos arrastrados: {e}")
+                
+                def eliminar_archivo(self, archivo):
+                    try:
+                        if archivo in self.archivos_pdf:
+                            self.archivos_pdf.remove(archivo)
+                            self.actualizar_lista()
+                    
+                    except Exception as e:
+                        messagebox.showerror("Error", f"Error eliminando archivo: {e}")
+                
+                def actualizar_lista(self):
+                    try:
+                        for widget in self.frame_lista.winfo_children():
+                            widget.destroy()
+                        
+                        if not self.archivos_pdf:
+                            tk.Label(
+                                self.frame_lista,
+                                text="No se han agregado archivos aún.",
+                                bg="#2a2a2a",
+                                fg="#bbbbbb",
+                                font=("Arial", 11)
+                            ).pack(pady=10)
+                            self.btn_unir.config(state="disabled")
+                        
+                        else:
+                            for i, archivo in enumerate(self.archivos_pdf):
+                                nombre = os.path.basename(archivo)
+                                contenedor = tk.Frame(self.frame_lista, bg="#2a2a2a")
+                                contenedor.pack(fill="x", pady=2)
+                                
+                                tk.Label(
+                                    contenedor,
+                                    text=f"{i + 1}. {nombre}",
+                                    anchor="w",
+                                    bg="#2a2a2a",
+                                    fg="white",
+                                    font=("Arial", 9)
+                                ).pack(side="left", fill="x", expand=True)
+                                
+                                tk.Button(
+                                    contenedor,
+                                    text="❌",
+                                    bg="#ff4444",
+                                    fg="white",
+                                    command=lambda a=archivo: self.eliminar_archivo(a),
+                                    relief="flat",
+                                    padx=6
+                                ).pack(side="right")
+                            
+                            self.btn_unir.config(state="normal" if len(self.archivos_pdf) >= 2 else "disabled")
+                    
+                    except Exception as e:
+                        messagebox.showerror("Error", f"Error actualizando lista: {e}")
+                
+                def combinar_archivos(self):
+                    try:
+                        if len(self.archivos_pdf) < 2:
+                            messagebox.showwarning("Advertencia", "Debes seleccionar al menos 2 archivos PDF.")
+                            return
+                        
+                        self.destroy()
+                        extra_operations.ExtraOperations.combinar_pdfs_seleccionados(self.archivos_pdf)
+                    
+                    except Exception as e:
+                        messagebox.showerror("Error", f"Error combinando archivos: {e}")
+            
+            ventana = DragDropPDFWindow(master=self)
+            ventana.transient(self)
+            ventana.grab_set()
+        
         except Exception as e:
-            self.logger.error(f"Error uniendo PDFs: {e}")
-            messagebox.showerror("Error", f"Error uniendo PDFs: {e}")
-    
+            messagebox.showerror("Error", f"Error al iniciar la ventana para unir PDF: {e}")
+
     def abrir_historial(self, tipo_operacion: str):
         """Abre el historial de una operación"""
         try:
