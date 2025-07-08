@@ -167,6 +167,60 @@ class ExtraOperations(LoggerMixin):
         return PdfWriter is not None and PdfReader is not None
     
     @staticmethod
+    def combinar_pdfs_seleccionados(archivos_pdf: List[str]) -> bool:
+        """Combina archivos PDF seleccionados individualmente"""
+        logger = ExtraOperations()
+        
+        try:
+            if not archivos_pdf:
+                messagebox.showwarning("Advertencia", "No se seleccionaron archivos PDF.")
+                return False
+            if not PdfWriter or not PdfReader:
+                messagebox.showerror("Error", "No se encontraron las librerías necesarias para PDF.")
+                return False
+            
+            merger = PdfWriter()
+            archivos_con_error = []
+            archivos_procesados = 0
+            
+            for archivo in archivos_pdf:
+                try:
+                    with open(archivo, 'rb') as f:
+                        reader = PdfReader(f)
+                        for page in reader.pages:
+                            merger.add_page(page)
+                    archivos_procesados += 1
+                except Exception as e:
+                    archivos_con_error.append(os.path.basename(archivo))
+                    logger.logger.error(f"Error procesando {archivo}: {e}")
+            
+            if archivos_procesados == 0:
+                messagebox.showerror("Error", "No se pudieron procesar los archivos PDF.")
+                return False
+            
+            carpeta_destino = os.path.dirname(archivos_pdf[0])
+            salida = os.path.join(carpeta_destino, "PDFs_Combinados_Sueltos.pdf")
+            contador = 1
+            while os.path.exists(salida):
+                salida = os.path.join(carpeta_destino, f"PDFs_Combinados_Sueltos_{contador}.pdf")
+                contador += 1
+            
+            with open(salida, "wb") as f:
+                merger.write(f)
+            
+            mensaje = f"PDF combinado guardado en:\n{salida}\n\nArchivos procesados: {archivos_procesados}"
+            if archivos_con_error:
+                mensaje += f"\nArchivos con errores: {len(archivos_con_error)}"
+            
+            messagebox.showinfo("Éxito", mensaje)
+            return True
+        
+        except Exception as e:
+            logger.logger.error(f"Error general combinando PDF seleccionados: {e}")
+            messagebox.showerror("Error", f"Error combinando PDF seleccionados: {e}")
+            return False
+    
+    @staticmethod
     def obtener_info_pdfs(carpeta: str) -> dict:
         """
         Obtiene información sobre los PDFs en una carpeta
