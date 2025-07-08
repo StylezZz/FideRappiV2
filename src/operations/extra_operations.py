@@ -219,7 +219,7 @@ class ExtraOperations(LoggerMixin):
             logger.logger.error(f"Error general combinando PDF seleccionados: {e}")
             messagebox.showerror("Error", f"Error combinando PDF seleccionados: {e}")
             return False
-    
+    #hola
     @staticmethod
     def obtener_info_pdfs(carpeta: str) -> dict:
         """
