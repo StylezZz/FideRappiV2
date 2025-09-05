@@ -20,7 +20,7 @@ from src.utils.file_manager import FileManager
 
 
 class CCEOperations(BaseLogic):
-    """Clase para manejar operaciones de CCE"""
+    """Clase para manejar operaciones de CCE  aaaaa"""
     
     def __init__(self):
         super().__init__("CCE")
