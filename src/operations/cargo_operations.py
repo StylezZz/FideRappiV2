@@ -216,7 +216,7 @@ class CargoOperations(BaseLogic):
             pyautogui.press('tab')
             pyautogui.write(memo)
             pyautogui.press('tab')
-            pyautogui.write('84')  # Motivo fijo
+            pyautogui.write(motivo)  # Motivo fijo
             pyautogui.write(glosa1)
             pyautogui.press('tab')
             pyautogui.write(glosa2)
