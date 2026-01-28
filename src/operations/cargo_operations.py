@@ -208,54 +208,58 @@ class CargoOperations(BaseLogic):
                 ventana.maximize()
                 ventana.activate()
             
+            time.sleep(0.5)  # Esperar a que se active
+            
             # Ejecutar secuencia de cargo
             pyautogui.press('f5')
+            time.sleep(0.3)
             pyautogui.write('042')  # Código de cargo
+            time.sleep(0.2)
             pyautogui.write(cuenta)
+            time.sleep(0.2)
             pyautogui.write(self.formatear_monto(importe))
+            time.sleep(0.2)
             pyautogui.press('tab')
+            time.sleep(0.2)
             pyautogui.write(memo)
+            time.sleep(0.2)
             pyautogui.press('tab')
-            pyautogui.write(motivo)  # Motivo fijo
+            time.sleep(0.2)
+            pyautogui.write(motivo)
+            time.sleep(0.2)
             pyautogui.write(glosa1)
+            time.sleep(0.2)
             pyautogui.press('tab')
+            time.sleep(0.2)
             pyautogui.write(glosa2)
+            time.sleep(0.2)
             pyautogui.press('tab')
+            time.sleep(0.2)
             pyautogui.write(glosa3)
+            time.sleep(0.2)
             pyautogui.press('enter')
-            time.sleep(2)
+            time.sleep(2.5)  # Esperar respuesta del emulador
             
             # Capturar respuesta de validación
             pyautogui.hotkey('ctrl', 'c')
-            time.sleep(0.2)
+            time.sleep(0.5)
             foto_panel = pyperclip.paste()
             time.sleep(0.3)
             panel = foto_panel.splitlines()
             
-            self.logger.info("Contenido del panel (análisis detallado):")
+            self.logger.info("=== PANEL DE VALIDACIÓN ===")
             for i, linea in enumerate(panel):
                 self.logger.info(f"Línea {i}: '{linea}'")
+            self.logger.info("=== FIN PANEL ===")
             
-            # Buscar mensaje de validación
-            msj_emulacion = ""
-            for linea in panel:
-                if "DATOS CORRECTOS PUEDE GRABAR" in linea:
-                    msj_emulacion = linea.strip()
-                    self.logger.info(f"Mensaje de validación encontrado: '{msj_emulacion}'")
-                    break
+            # Extraer mensaje inteligentemente
+            msj_emulacion = self._extraer_mensaje_validacion(panel)
+            self.logger.info(f"Mensaje extraído: '{msj_emulacion}'")
             
-            # Si no se encuentra, usar línea predeterminada
-            if not msj_emulacion and len(panel) > 23:
-                msj_emulacion = panel[23].strip()
-                self.logger.info(f"Usando línea predeterminada 23: '{msj_emulacion}'")
-            
-            self.logger.info(f"Mensaje final de validación: '{msj_emulacion}'")
-            
-            if "DATOS CORRECTOS PUEDE GRABAR" in msj_emulacion:
+            if "DATOS CORRECTOS PUEDE GRABAR" in msj_emulacion or "PUEDE GRABAR" in msj_emulacion:
                 self.logger.info(f"Validación exitosa: {msj_emulacion}")
                 return self._grabar_cargo(hoja, fila, memo)
             else:
-                # Error en validación
                 hoja.range(f'J{fila}').value = msj_emulacion
                 hoja.range(f'K{fila}').value = "DATOS ERRONEOS"
                 pyautogui.press('f5')
@@ -270,45 +274,25 @@ class CargoOperations(BaseLogic):
         """Graba el cargo en el emulador"""
         try:
             pyautogui.press('f4')  # Grabar
-            time.sleep(0.2)
+            time.sleep(2.5)  # Esperar respuesta del emulador
+            
             pyautogui.hotkey('ctrl', 'c')
-            time.sleep(0.2)
+            time.sleep(0.5)
             foto_grabacion = pyperclip.paste()
             time.sleep(0.3)
             
             foto_grabacion_lineas = foto_grabacion.splitlines()
-            self.logger.info("Contenido de foto_grabacion:")
+            
+            self.logger.info("=== PANEL DE GRABACIÓN ===")
             for i, linea in enumerate(foto_grabacion_lineas):
                 self.logger.info(f"Línea {i}: {linea}")
+            self.logger.info("=== FIN GRABACIÓN ===")
             
-            # Buscar mensaje de grabación
-            msj_grabacion = ""
-            for linea in foto_grabacion_lineas:
-                if "GRABACION CORRECTA" in linea:
-                    msj_grabacion = linea.strip()
-                    self.logger.info(f"¡Mensaje de grabación correcta encontrado: '{msj_grabacion}'!")
-                    break
+            # Extraer mensaje de grabación
+            msj_grabacion = self._extraer_mensaje_grabacion(foto_grabacion_lineas)
+            self.logger.info(f"Mensaje de grabación: '{msj_grabacion}'")
             
-            # Si no se encontró, buscar en línea específica
-            if not msj_grabacion and len(foto_grabacion_lineas) > 29:
-                msj_grabacion = foto_grabacion_lineas[29].strip()
-                self.logger.info(f"Usando línea 29: '{msj_grabacion}'")
-            
-            # Buscar cualquier mensaje relevante si aún está vacío
-            if not msj_grabacion:
-                for linea in foto_grabacion_lineas:
-                    if any(msg in linea for msg in ["GRABACION", "ERROR", "RECHAZADO", "CORRECTO"]):
-                        msj_grabacion = linea.strip()
-                        self.logger.info(f"Encontrado mensaje alternativo: '{msj_grabacion}'")
-                        break
-            
-            self.logger.info(f"Mensaje final de grabación: '{msj_grabacion}'")
-            
-            # Si aún está vacío, establecer valor predeterminado
-            if not msj_grabacion:
-                msj_grabacion = "NO SE DETECTÓ MENSAJE DE GRABACIÓN"
-            
-            if "GRABACION CORRECTA" in msj_grabacion:
+            if "GRABACION CORRECTA" in msj_grabacion or ("GRABACION" in msj_grabacion and "CORRECTA" in msj_grabacion):
                 hoja.range(f'J{fila}').value = msj_grabacion
                 hoja.range(f'K{fila}').value = "OK"
                 pyautogui.press('f5')
@@ -325,24 +309,43 @@ class CargoOperations(BaseLogic):
             self.logger.error(f"Error grabando cargo: {e}")
             return False
     
-    def _guardar_archivo_procesado(self, wb, lista_memos: set, directorio: str, 
-                                 fecha_actual: datetime) -> str:
-        """Guarda el archivo procesado de cargo"""
-        try:
-            nombre_archivo = self.file_manager.generar_nombre_archivo_procesado(
-                "Cargo", list(lista_memos)
-            )
-            
-            ruta_directorio = self.file_manager.crear_directorio_procesados(
-                directorio, "Cargo", fecha_actual
-            )
-            
-            ruta_procesado = os.path.join(ruta_directorio, nombre_archivo)
-            wb.save(ruta_procesado)
-            
-            self.logger.info(f"Archivo Cargo procesado guardado: {ruta_procesado}")
-            return ruta_procesado
-            
-        except Exception as e:
-            self.logger.error(f"Error guardando archivo procesado: {e}")
-            return ""
+    def _extraer_mensaje_validacion(self, panel: list) -> str:
+        """Extrae el mensaje de validación de forma inteligente"""
+        # Buscar línea con 'PUEDE GRABAR' o 'DATOS CORRECTOS'
+        for linea in panel:
+            if "PUEDE GRABAR" in linea or "DATOS CORRECTOS" in linea:
+                return linea.strip()
+        
+        # Si no encuentra, buscar líneas significativas (sin estar vacías)
+        lineas_significativas = [l.strip() for l in panel if len(l.strip()) > 15]
+        
+        if lineas_significativas:
+            # Retornar la última línea significativa
+            return lineas_significativas[-1]
+        
+        return "NO SE DETECTÓ MENSAJE DE VALIDACIÓN"
+    
+    def _extraer_mensaje_grabacion(self, lineas: list) -> str:
+        """Extrae el mensaje de grabación de forma inteligente"""
+        # Buscar línea con 'GRABACION CORRECTA'
+        for linea in lineas:
+            if "GRABACION CORRECTA" in linea:
+                return linea.strip()
+        
+        # Buscar líneas con palabras clave
+        for linea in lineas:
+            if "GRABACION" in linea and ("CORRECTA" in linea or "EXITOSA" in linea or "OK" in linea):
+                return linea.strip()
+        
+        # Si no encuentra, buscar líneas significativas con 'GRABACION'
+        lineas_significativas = [l.strip() for l in lineas if len(l.strip()) > 15 and "GRABACION" in l]
+        
+        if lineas_significativas:
+            return lineas_significativas[-1]
+        
+        # Última opción: buscar cualquier línea relevante
+        lineas_significativas = [l.strip() for l in lineas if len(l.strip()) > 15]
+        if lineas_significativas:
+            return lineas_significativas[-1]
+        
+        return "NO SE DETECTÓ MENSAJE DE GRABACIÓN"
